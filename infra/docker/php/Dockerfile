@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-bullseye
+FROM php:7.4-fpm-bullseye
 SHELL ["/bin/bash", "-oeux", "pipefail", "-c"]
 
 # timezone environment
