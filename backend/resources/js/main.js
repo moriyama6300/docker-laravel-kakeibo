@@ -1,12 +1,12 @@
-import 'main.js';
+import "main.js";
 
-(function(){
-	'use strict';
+(function () {
+    "use strict";
 
-	const vm = new Vue({
-		el: '#app',
-		date: function() {
-			var today = new Date();
-		}
-	});
+    const vm = new Vue({
+        el: "#app",
+        date: function () {
+            var today = new Date();
+        },
+    });
 })();
