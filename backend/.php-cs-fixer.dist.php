@@ -7,7 +7,7 @@ $finder = PhpCsFixer\Finder::create()
 		__DIR__ . '/app',
 		__DIR__ . '/config',
 		__DIR__ . '/database/factories',
-		__DIR__ . '/database/seeders',
+		__DIR__ . '/database/seeds',
 		__DIR__ . '/routes',
 		__DIR__ . '/tests',
 	]);

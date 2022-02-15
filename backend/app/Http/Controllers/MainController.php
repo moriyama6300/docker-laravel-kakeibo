@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -7,7 +7,7 @@ use App\Outgoing;
 use App\Income;
 use Carbon\Carbon;
 
-class MainController extends Controller
+final class MainController extends Controller
 {
     public function home(Request $request)
     {
@@ -85,14 +85,14 @@ class MainController extends Controller
         ]);
 
         // 支出か収入で分岐
-        if ($request->which == 'out') {
+        if ($request->which === 'out') {
             Outgoing::create([
                 // 'user_id' => Auth::user()->id,
                 'date' => $request->date,
                 'category' => $request->category,
                 'yen' => $request->yen
             ]);
-        } elseif ($request->which == 'in') {
+        } elseif ($request->which === 'in') {
             Income::create([
                 // 'user_id' => Auth::user()->id,
                 'date' => $request->date,
