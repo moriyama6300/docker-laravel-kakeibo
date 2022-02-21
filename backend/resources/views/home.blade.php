@@ -136,24 +136,7 @@
                 </button>
             </form>
         </div>
-        <canvas id="my_chart"></canvas>
-        <script src="{{ mix('js/chart.js') }}"></script>
-        <script src="/bower_components/chart.js/dist/Chart.min.js"></script>
-        <script src="/bower_components/chartjs-plugin-labels/build/chartjs-plugin-labels.min.js"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script> -->
-        <script>
-            id = 'my_chart';
-            labels = @json($labels);
-            console.log(labels);
-            data = @json($sum);
-            title = '@json($year)年@json($month)月';
-            title = title.replace(/"/g, '');
-            make_chart(id, labels, data, title);
-        </script>
         <!-- 仮　カテゴリ操作 -->
-        <div>
-            <label>カテゴリ操作</label>
-        </div>
         <form action="/addCategory" method="post" enctype='multipart/form-data'>
             @csrf
             <div>
@@ -161,20 +144,20 @@
                 <input id="categoryName" name="categoryName" type='text' class="form-control {{ $errors->has('categoryName') ? 'is-invalid' : '' }}">
                 カラー :
                 <input id="categoryColor" name="categoryColor" type='text' class="form-control {{ $errors->has('categoryColor') ? 'is-invalid' : '' }}">
-            <button type="submit" class="btn btn-primary">
-                追加
-            </button>
-            @if ($errors->has('categoryName'))
-                <div class="invalid-feedback">
-                    {{ $errors->first('categoryName') }}
-                </div>
-            @endif
-            @if ($errors->has('categoryColor'))
-                <div class="invalid-feedback">
-                    {{ $errors->first('categoryColor') }}
-                </div>
-            @endif
-        </div>
+                <button type="submit" class="btn btn-primary">
+                    追加
+                </button>
+                @if ($errors->has('categoryName'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('categoryName') }}
+                    </div>
+                @endif
+                @if ($errors->has('categoryColor'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('categoryColor') }}
+                    </div>
+                @endif
+            </div>
         </form>
         <form action="/delCategory" method="post" enctype='multipart/form-data'>
             @csrf
@@ -194,6 +177,20 @@
             @endif
         </form>
         <!-- 仮　カテゴリ操作 -->
+        <canvas id="my_chart"></canvas>
+        <script src="{{ mix('js/chart.js') }}"></script>
+        <script src="/bower_components/chart.js/dist/Chart.min.js"></script>
+        <script src="/bower_components/chartjs-plugin-labels/build/chartjs-plugin-labels.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script> -->
+        <script>
+            id = 'my_chart';
+            labels = @json($labels);
+            console.log(labels);
+            data = @json($sum);
+            title = '@json($year)年@json($month)月';
+            title = title.replace(/"/g, '');
+            make_chart(id, labels, data, title);
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     </div>
