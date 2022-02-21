@@ -75,9 +75,7 @@
                 日付 :
                 <input type="date" name="date" class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" value="{{ old('date', $today) }}">
                 @if ($errors->has('date'))
-                <div class="invalid-feedback">
                     {{ $errors->first('date') }}
-                </div>
                 @endif
             </div>
             <div>
@@ -95,20 +93,21 @@
                         <option value="{{ $label['name'] }}">{{ $label['name'] }}</option>
                     @endforeach
                 </select>
+                @if ($errors->has('category'))
+                    {{ $errors->first('category') }}
+                @endif
             </div>
             <div>
                 金額 :
                 <input id='yen' name='yen' type='text' placeholder="※必須" class="form-control {{ $errors->has('yen') ? 'is-invalid' : '' }}" value="{{ old('yen') }}">
                 円
                 @if ($errors->has('yen'))
-                <div class="invalid-feedback">
                     {{ $errors->first('yen') }}
-                </div>
                 @endif
+            </div>
             <button type="submit" class="btn btn-primary">
                 登録
             </button>
-            </div>
         </form>
         <div>
             <form action="/reference" method="post" enctype='multipart/form-data'>
@@ -148,14 +147,10 @@
                     追加
                 </button>
                 @if ($errors->has('categoryName'))
-                    <div class="invalid-feedback">
                         {{ $errors->first('categoryName') }}
-                    </div>
                 @endif
                 @if ($errors->has('categoryColor'))
-                    <div class="invalid-feedback">
                         {{ $errors->first('categoryColor') }}
-                    </div>
                 @endif
             </div>
         </form>

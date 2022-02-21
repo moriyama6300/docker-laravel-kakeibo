@@ -37899,21 +37899,10 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     var data = {
-      // labels: ['住居費', '水道光熱費', '通信費', '食費', '娯楽費', '日用品費', '保険料', 'その他'],
       labels: labelNames,
       datasets: [{
         data: data,
-        backgroundColor: labelColors // backgroundColor: [
-        //     "coral",
-        //     "steelblue",
-        //     "gold",
-        //     "forestgreen",
-        //     "pink",
-        //     "orange",
-        //     "lightskyblue",
-        //     "lavender",
-        // ],
-
+        backgroundColor: labelColors
       }]
     };
     var options = {

@@ -48,11 +48,11 @@ final class MainController extends Controller
             'category' => 'required',
             'yen' => 'required|integer|numeric',
         ], [
-            'date.required' => '日付は必須です。',
-            'category.required' => 'カテゴリは必須です。',
-            'yen.required' => '金額は必須です。',
-            'yen.integer' => '金額は整数値で入力してください。',
-            'yen.numeric' => '金額は整数値で入力してください。',
+            'date.required' => '※日付は必須です。',
+            'category.required' => '※カテゴリは必須です。',
+            'yen.required' => '※金額は必須です。',
+            'yen.integer' => '※金額は整数値で入力してください。',
+            'yen.numeric' => '※金額は整数値で入力してください。',
         ]);
 
         // 支出か収入で分岐
@@ -144,7 +144,7 @@ final class MainController extends Controller
         $request->validate([
             'categoryName' => 'required',
         ], [
-            'categoryName.required' => 'カテゴリ名は必須です。'
+            'categoryName.required' => '※カテゴリ名は必須です。'
         ]);
 
         Labels::create([
@@ -164,7 +164,7 @@ final class MainController extends Controller
         $request->validate([
             'category_id' => 'required',
         ], [
-            'category_id.required' => 'カテゴリ名は必須です。'
+            'category_id.required' => '※カテゴリ名は必須です。'
         ]);
 
         Labels::where('id', $request->category_id)->delete();
