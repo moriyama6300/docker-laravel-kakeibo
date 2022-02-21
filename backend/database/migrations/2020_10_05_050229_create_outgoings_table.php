@@ -15,10 +15,10 @@ class CreateOutgoingsTable extends Migration
     {
         Schema::create('outgoings', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->date('date');
             $table->string('category');
             $table->integer('yen');
+            $table->timestamps();
         });
     }
 

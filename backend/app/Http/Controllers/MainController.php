@@ -5,63 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Outgoing;
 use App\Income;
+use App\Labels;
 use Carbon\Carbon;
 
 final class MainController extends Controller
 {
     public function home(Request $request)
     {
-        // 今月の1日を取得する
-        $from = Carbon::createFromDate('first day of this month');
-        // 来月の1日を取得する
-        $to = Carbon::createFromDate('last day of this month');
-        // whereBetween句で検索をかけてデータを取得
-        // 支出データ
-        $outgoings = Outgoing::whereBetween('date', [$from, $to])->get();
-        // 支出合計金額
-        $outgoingSum = $outgoings->sum('yen');
-        // 収入データ
-        $incomes = Income::whereBetween('date', [$from, $to])->get();
-        // 収入合計金額
-        $incomeSum = $incomes->sum('yen');
-        // 収支
-        $syushi = $incomeSum - $outgoingSum;
-        $category1 = $outgoings->where('category', '住居費')->sum('yen');
-        $category2 = $outgoings->where('category', '水道光熱費')->sum('yen');
-        $category3 = $outgoings->where('category', '通信費')->sum('yen');
-        $category4 = $outgoings->where('category', '食費')->sum('yen');
-        $category5 = $outgoings->where('category', '娯楽費')->sum('yen');
-        $category6 = $outgoings->where('category', '日用品費')->sum('yen');
-        $category7 = $outgoings->where('category', '保険料')->sum('yen');
-        $category8 = $outgoings->where('category', 'その他')->sum('yen');
-        $category9 = $incomes->where('category', '給与')->sum('yen');
-        $category10 = $incomes->where('category', 'その他')->sum('yen');
-        $now = new Carbon('now');
-        $year = date('Y', strtotime($now));
-        $month = date('m', strtotime($now));
-        $labels = ['住居費', '水道光熱費', '通信費', '食費', '娯楽費', '日用品費', '保険料', 'その他'];
-        $sums = [$category1, $category2, $category3, $category4, $category5, $category6, $category7, $category8];
-        // viewにわたす
+        $today = new Carbon('today');
+        $year = $today->year;
+        $month = $today->month;
+        $data = $this->selectData($year, $month);
+
+        $labels = Labels::get();
+        $sum = [];
+        foreach($labels as $label){
+            array_push($sum, $data['outgoings']->where('category', $label['name'])->sum('yen'));
+        }
+
         return view('home', [
-            'outgoings' => $outgoings,
-            'incomes' => $incomes,
-            'outgoingSum' => $outgoingSum,
-            'incomeSum' => $incomeSum,
-            'syushi' => $syushi,
-            'category1' => $category1,
-            'category2' => $category2,
-            'category3' => $category3,
-            'category4' => $category4,
-            'category5' => $category5,
-            'category6' => $category6,
-            'category7' => $category7,
-            'category8' => $category8,
-            'category9' => $category9,
-            'category10' => $category10,
+            'today' => $today,
+            'outgoings' => $data['outgoings'],
+            'incomes' => $data['incomes'],
+            'outgoingSum' => $data['outgoingSum'],
+            'incomeSum' => $data['incomeSum'],
+            'syushi' => $data['syushi'],
             'year' => $year,
             'month' => $month,
             'labels' => $labels,
-            'sums' => $sums
+            'sum' => $sum
         ]);
     }
 
@@ -70,7 +42,6 @@ final class MainController extends Controller
     */
     public function input(Request $request)
     {
-        // dd($request);
         //バリエーション
         $request->validate([
             'date' => 'required',
@@ -100,6 +71,105 @@ final class MainController extends Controller
                 'yen' => $request->yen
             ]);
         }
+        return redirect()->route('home');
+    }
+
+    /*
+    * データ取得関数
+    */
+    public function selectData($year, $month){
+        $result = [];
+
+        // 月の1日を取得する
+        $from = Carbon::create($year, $month, 1)->firstOfMonth();
+        // 月の最終日を取得する
+        $to = Carbon::create($year, $month, 1)->lastOfMonth();
+
+        // 支出データ
+        $outgoings = Outgoing::whereBetween('date', [$from, $to])->get();
+        $result['outgoings'] = $outgoings;
+
+        // 支出合計金額
+        $outgoingSum = $outgoings->sum('yen');
+        $result['outgoingSum'] = $outgoingSum;
+
+        // 収入データ
+        $incomes = Income::whereBetween('date', [$from, $to])->get();
+        $result['incomes'] = $incomes;
+
+        // 収入合計金額
+        $incomeSum = $incomes->sum('yen');
+        $result['incomeSum'] = $incomeSum;
+
+        // 収支
+        $syushi = $incomeSum - $outgoingSum;
+        $result['syushi'] = $syushi;
+
+        return $result;
+    }
+
+    /*
+    * データ参照関数
+    */
+    public function reference(Request $request){
+        $data = $this->selectData($request->year, $request->month);
+        $labels = Labels::get();
+        $sum = [];
+        foreach($labels as $label){
+            array_push($sum, $data['outgoings']->where('category', $label['name'])->sum('yen'));
+        }
+
+        $today = new Carbon('today');
+
+        return view('home', [
+            'today' => $today,
+            'outgoings' => $data['outgoings'],
+            'incomes' => $data['incomes'],
+            'outgoingSum' => $data['outgoingSum'],
+            'incomeSum' => $data['incomeSum'],
+            'syushi' => $data['syushi'],
+            'year' => $request->year,
+            'month' => $request->month,
+            'labels' => $labels,
+            'sum' => $sum
+        ]);
+    }
+
+    /*
+    * カテゴリ追加関数
+    */
+    public function addCategory(Request $request)
+    {
+        // バリデーション
+        $request->validate([
+            'categoryName' => 'required',
+        ], [
+            'categoryName.required' => 'カテゴリ名は必須です。'
+        ]);
+
+        Labels::create([
+            'name' => $request->categoryName,
+            'color' => $request->categoryColor
+        ]);
+
+        return redirect()->route('home');
+    }
+
+    /*
+    * カテゴリ削除関数
+    */
+    public function delCategory(Request $request)
+    {
+        // バリデーション
+        $request->validate([
+            'category_id' => 'required',
+        ], [
+            'category_id.required' => 'カテゴリ名は必須です。'
+        ]);
+
+        Labels::where('id', $request->category_id)->delete();
+        $labels = Labels::get();
+
         return redirect()->route('home');
     }
 }

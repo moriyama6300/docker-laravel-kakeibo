@@ -15,10 +15,10 @@ class CreateIncomesTable extends Migration
     {
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->date('date');
             $table->string('category');
             $table->integer('yen');
+            $table->timestamps();
         });
     }
     /**

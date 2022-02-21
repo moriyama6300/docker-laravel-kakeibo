@@ -19,3 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'MainController@home')->name('home');
 Route::post('/input', 'MainController@input')->name('input');
+Route::post('/reference', 'MainController@reference')->name('reference');
+Route::post('/addCategory', 'MainController@addCategory')->name('addCategory');
+Route::post('/delCategory', 'MainController@delCategory')->name('delCategory');

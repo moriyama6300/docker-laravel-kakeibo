@@ -1,38 +1,35 @@
 import "chart.js";
 
-(function () {
+(function() {
     "use strict";
-    window.make_chart = function make_chart(id, lavels, data, title) {
+    window.make_chart = function make_chart(id, labels, data, title) {
         var type = "doughnut";
 
+        let labelNames = [];
+        let labelColors = [];
+        for (let i = 0; i < labels.length; i++) {
+            labelNames.push(labels[i]["name"]);
+            labelColors.push(labels[i]["color"]);
+        }
+
         var data = {
-            // labels: ['住居費', '水道光熱費', '通信費', '食費', '娯楽費', '日用品費', '保険料', 'その他'],
-            labels: lavels,
+            labels: labelNames,
             datasets: [
                 {
                     data: data,
-                    backgroundColor: [
-                        "coral",
-                        "steelblue",
-                        "gold",
-                        "forestgreen",
-                        "pink",
-                        "orange",
-                        "lightskyblue",
-                        "lavender",
-                    ],
-                },
-            ],
+                    backgroundColor: labelColors
+                }
+            ]
         };
 
         var options = {
             title: {
                 display: true,
                 text: title,
-                fontSize: 20,
+                fontSize: 20
             },
             legend: {
-                display: true,
+                display: true
             },
             cutoutPercentage: 40,
             plugins: {
@@ -40,9 +37,9 @@ import "chart.js";
                     render: "value",
                     position: "default",
                     fontSize: 10,
-                    fontColor: "black",
-                },
-            },
+                    fontColor: "black"
+                }
+            }
         };
 
         var ctx = document.getElementById("my_chart").getContext("2d");
@@ -50,7 +47,7 @@ import "chart.js";
         var myChart = new Chart(ctx, {
             type: type,
             data: data,
-            options: options,
+            options: options
         });
     };
 })();

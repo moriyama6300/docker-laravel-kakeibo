@@ -73,7 +73,7 @@
             @csrf
             <div>
                 日付 :
-                <input type="date" name="date" class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" value="{{ old('date') }}">
+                <input type="date" name="date" class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" value="{{ old('date', $today) }}">
                 @if ($errors->has('date'))
                 <div class="invalid-feedback">
                     {{ $errors->first('date') }}
@@ -91,15 +91,9 @@
                 カテゴリ :
                 <select name="category">
                     <option value=""></option>
-                    <option value="住居費">住居費</option>
-                    <option value="水道光熱費">水道光熱費</option>
-                    <option value="通信費">通信費</option>
-                    <option value="食費">食費</option>
-                    <option value="娯楽費">娯楽費</option>
-                    <option value="日用品費">日用品費</option>
-                    <option value="保険料">保険料</option>
-                    <option value="給与">給与</option>
-                    <option value="その他">その他</option>
+                    @foreach($labels as $label)
+                        <option value="{{ $label['name'] }}">{{ $label['name'] }}</option>
+                    @endforeach
                 </select>
             </div>
             <div>
@@ -111,11 +105,37 @@
                     {{ $errors->first('yen') }}
                 </div>
                 @endif
-            </div>
             <button type="submit" class="btn btn-primary">
-                登録する
+                登録
             </button>
+            </div>
         </form>
+        <div>
+            <form action="/reference" method="post" enctype='multipart/form-data'>
+                @csrf
+                <select name="year">
+                    @for ($i = 1980; $i <= $year; $i++)
+                        @if($i == $year)
+                            <option value={{ $i }} selected>{{ $i }}年</option>
+                        @else
+                            <option value={{ $i }}>{{ $i }}年</option>
+                        @endif
+                    @endfor
+                </select>
+                <select name="month">
+                    @for ($i = 1; $i <= 12; $i++)
+                        @if($i == $month)
+                            <option value={{ $i }} selected>{{ $i }}月</option>
+                        @else
+                            <option value={{ $i }}>{{ $i }}月</option>
+                        @endif
+                    @endfor
+                </select>
+                <button type="submit" class="btn btn-primary">
+                    参照
+                </button>
+            </form>
+        </div>
         <canvas id="my_chart"></canvas>
         <script src="{{ mix('js/chart.js') }}"></script>
         <script src="/bower_components/chart.js/dist/Chart.min.js"></script>
@@ -123,28 +143,57 @@
         <!-- <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script> -->
         <script>
             id = 'my_chart';
-            lavels = @json($labels);
-            data = @json($sums);
+            labels = @json($labels);
+            console.log(labels);
+            data = @json($sum);
             title = '@json($year)年@json($month)月';
             title = title.replace(/"/g, '');
-            make_chart(id, lavels, data, title);
+            make_chart(id, labels, data, title);
         </script>
-        <!-- <div>{{ $year }}年  {{ $month }}月</div>
-            <div>支出：{{ $outgoingSum }}円</div>
-            <div>収入：{{ $incomeSum }}円</div>
-            <div>収支：{{ $syushi }}円</div>
-            <br>
-            <div>カテゴリ</div>
-            <div>住居費：{{ $category1 }}円</div>
-            <div>水道光熱費：{{ $category2 }}円</div>
-            <div>通信費：{{ $category3 }}円</div>
-            <div>食費：{{ $category4 }}円</div>
-            <div>娯楽費：{{ $category5 }}円</div>
-            <div>日用品費：{{ $category6 }}円</div>
-            <div>保険料：{{ $category7 }}円</div>
-            <div>その他支出：{{ $category8 }}円</div>
-            <div>給与：{{ $category9 }}円</div>
-            <div>その他収入：{{ $category10 }}円</div> -->
+        <!-- 仮　カテゴリ操作 -->
+        <div>
+            <label>カテゴリ操作</label>
+        </div>
+        <form action="/addCategory" method="post" enctype='multipart/form-data'>
+            @csrf
+            <div>
+                カテゴリ名 :
+                <input id="categoryName" name="categoryName" type='text' class="form-control {{ $errors->has('categoryName') ? 'is-invalid' : '' }}">
+                カラー :
+                <input id="categoryColor" name="categoryColor" type='text' class="form-control {{ $errors->has('categoryColor') ? 'is-invalid' : '' }}">
+            <button type="submit" class="btn btn-primary">
+                追加
+            </button>
+            @if ($errors->has('categoryName'))
+                <div class="invalid-feedback">
+                    {{ $errors->first('categoryName') }}
+                </div>
+            @endif
+            @if ($errors->has('categoryColor'))
+                <div class="invalid-feedback">
+                    {{ $errors->first('categoryColor') }}
+                </div>
+            @endif
+        </div>
+        </form>
+        <form action="/delCategory" method="post" enctype='multipart/form-data'>
+            @csrf
+            <select name="category_id">
+                <option value=""></option>
+                @foreach($labels as $label)
+                    <option value="{{ $label['id'] }}">{{ $label['name'] }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary">
+                削除
+            </button>
+            @if ($errors->has('category_id'))
+                <div class="invalid-feedback">
+                    {{ $errors->first('category_id') }}
+                </div>
+            @endif
+        </form>
+        <!-- 仮　カテゴリ操作 -->
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     </div>

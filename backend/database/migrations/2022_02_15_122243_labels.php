@@ -13,7 +13,12 @@ class Labels extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('labels', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->string('color');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,6 @@ class Labels extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('labels');
     }
 }

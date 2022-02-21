@@ -37886,16 +37886,34 @@ __webpack_require__.r(__webpack_exports__);
 
 
 (function () {
-  'use strict';
+  "use strict";
 
-  window.make_chart = function make_chart(id, lavels, data, title) {
-    var type = 'doughnut';
+  window.make_chart = function make_chart(id, labels, data, title) {
+    var type = "doughnut";
+    var labelNames = [];
+    var labelColors = [];
+
+    for (var i = 0; i < labels.length; i++) {
+      labelNames.push(labels[i]["name"]);
+      labelColors.push(labels[i]["color"]);
+    }
+
     var data = {
       // labels: ['住居費', '水道光熱費', '通信費', '食費', '娯楽費', '日用品費', '保険料', 'その他'],
-      labels: lavels,
+      labels: labelNames,
       datasets: [{
         data: data,
-        backgroundColor: ['coral', 'steelblue', 'gold', 'forestgreen', 'pink', 'orange', 'lightskyblue', 'lavender']
+        backgroundColor: labelColors // backgroundColor: [
+        //     "coral",
+        //     "steelblue",
+        //     "gold",
+        //     "forestgreen",
+        //     "pink",
+        //     "orange",
+        //     "lightskyblue",
+        //     "lavender",
+        // ],
+
       }]
     };
     var options = {
@@ -37910,14 +37928,14 @@ __webpack_require__.r(__webpack_exports__);
       cutoutPercentage: 40,
       plugins: {
         labels: {
-          render: 'value',
-          position: 'default',
+          render: "value",
+          position: "default",
           fontSize: 10,
-          fontColor: 'black'
+          fontColor: "black"
         }
       }
     };
-    var ctx = document.getElementById('my_chart').getContext('2d');
+    var ctx = document.getElementById("my_chart").getContext("2d");
     var myChart = new Chart(ctx, {
       type: type,
       data: data,
@@ -37935,7 +37953,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/vagrant/code/Kakeibo/resources/js/chart.js */"./resources/js/chart.js");
+module.exports = __webpack_require__(/*! /work/backend/resources/js/chart.js */"./resources/js/chart.js");
 
 
 /***/ })
